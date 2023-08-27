@@ -1,0 +1,15 @@
+version: '3'
+services:
+  REGISTRY_IMAGE:
+    container_name: REGISTRY_IMAGE
+    image: registry.digitalocean.com/REGISTRY_NAME/REGISTRY_IMAGE:REGISTRY_TAG
+    restart: always
+    ports:
+      - '5000:5000'
+  watchtower:
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $HOME/.docker/config.json:/config.json
+    command: --interval 30
