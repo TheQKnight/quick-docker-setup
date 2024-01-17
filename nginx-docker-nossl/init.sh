@@ -25,18 +25,6 @@ then
       exit 1
 fi
 
-if [ -z "$DOMAIN_NAME" ]
-then
-      echo "\$DOMAIN_NAME is empty"
-      exit 1
-fi
-
-if [ -z "$DOMAIN_EMAIL" ]
-then
-      echo "\$DOMAIN_EMAIL is empty"
-      exit 1
-fi
-
 if [ -z "$REGISTRY_NAME" ]
 then
       echo "\$REGISTRY_NAME is empty"
@@ -78,10 +66,6 @@ sudo ufw allow https
 sudo ufw allow 'Nginx HTTP'
 sudo ufw allow 'Nginx HTTPS'
 sudo ufw --force enable
-
-# Replace config text
-
-sed -i "s/DOMAIN_NAME/$DOMAIN_NAME/g" nginx/sites-available/default
 
 # If custom header is not blank, then replace LOCATION_OPTIONS in nginx/sites-available/default with if ($http_x_custom_header != "CUSTOM_HEADER") { return 403; }
 

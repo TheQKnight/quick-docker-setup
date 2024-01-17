@@ -6,8 +6,6 @@ server {
 
         index index.html index.htm index.nginx-debian.html;
 
-        server_name DOMAIN_NAME www.DOMAIN_NAME;
-
         proxy_read_timeout 900s;
         proxy_connect_timeout 900s;
         proxy_send_timeout 900s;
