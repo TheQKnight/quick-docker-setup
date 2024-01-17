@@ -5,13 +5,11 @@ DOCKER_USERNAME=$1
 echo "docker password set"
 DOCKER_PASSWORD=$2
 echo "registry name set"
-REGISTRY_NAME=$5
+REGISTRY_NAME=$3
 echo "registry image set"
-REGISTRY_IMAGE=$6
+REGISTRY_IMAGE=$4
 echo "registry tag set"
-REGISTRY_TAG=$7
-echo "custom header set"
-CUSTOM_HEADER=$8
+REGISTRY_TAG=$5
 
 if [ -z "$DOCKER_USERNAME" ]
 then
@@ -45,7 +43,7 @@ fi
 
 # If there is an unknown 8th variable then exit
 
-if [ -n "$9" ]
+if [ -n "$6" ]
 then
       echo "Too many arguments"
       exit 1
@@ -66,15 +64,6 @@ sudo ufw allow https
 sudo ufw allow 'Nginx HTTP'
 sudo ufw allow 'Nginx HTTPS'
 sudo ufw --force enable
-
-# If custom header is not blank, then replace LOCATION_OPTIONS in nginx/sites-available/default with if ($http_x_custom_header != "CUSTOM_HEADER") { return 403; }
-
-if [ -n "$CUSTOM_HEADER" ]
-then
-      sed -i "s/LOCATION_OPTIONS/if (\$http_x_custom_header != \"$CUSTOM_HEADER\") { return 403; }/g" nginx/sites-available/default
-else 
-      sed -i "s/LOCATION_OPTIONS//g" nginx/sites-available/default
-fi
 
 sed -i "s/REGISTRY_NAME/$REGISTRY_NAME/g" docker-compose.yml
 sed -i "s/REGISTRY_IMAGE/$REGISTRY_IMAGE/g" docker-compose.yml
