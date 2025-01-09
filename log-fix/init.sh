@@ -57,10 +57,13 @@ if [ -d /var/log/nginx ]; then
     find /var/log/nginx -type f -name "access.log" -exec truncate -s 0 {} \;
     find /var/log/nginx -type f -name "error.log" -exec truncate -s 0 {} \;
     find /var/log/nginx -type f -name "websocket.log" -exec truncate -s 0 {} \;
+    find /var/log/nginx -type f -name "access.log.1" -exec truncate -s 0 {} \;
+    find /var/log/nginx -type f -name "error.log.1" -exec truncate -s 0 {} \;
+    find /var/log/nginx -type f -name "websocket.log.1" -exec truncate -s 0 {} \;
     
     # Remove old compressed logs (keeping only 7 days worth)
-    find /var/log/nginx -type f -name "*.log.[8-9].gz" -delete
-    find /var/log/nginx -type f -name "*.log.1[0-4].gz" -delete
+    find /var/log/nginx -type f -name "*.log.[0-9].gz" -delete
+    find /var/log/nginx -type f -name "*.log.1[0-9].gz" -delete
     echo "Nginx logs cleaned"
 fi
 
