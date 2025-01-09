@@ -3,12 +3,6 @@
 # Script to clean up disk space and configure log rotation
 # Must be run as root or with sudo
 
-# Log current disk usage
-echo "Current disk usage:"
-df -h /
-
-echo
-
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then 
     echo "Please run as root or with sudo"
@@ -34,7 +28,7 @@ fi
 # Update nginx logrotate configuration
 print_header "Updating nginx logrotate configuration"
 cat > /etc/logrotate.d/nginx << 'EOF'
-/var/log/nginx/*.log {
+/var/log/nginx/access.log /var/log/nginx/error.log /var/log/nginx/websocket.log {
     daily
     missingok
     rotate 7
@@ -59,8 +53,14 @@ EOF
 # Clear current nginx logs
 print_header "Clearing current nginx logs"
 if [ -d /var/log/nginx ]; then
-    find /var/log/nginx -type f -name "*.log" -exec truncate -s 0 {} \;
-    find /var/log/nginx -type f -name "*.log.[8-14].gz" -delete
+    # Truncate current log files
+    find /var/log/nginx -type f -name "access.log" -exec truncate -s 0 {} \;
+    find /var/log/nginx -type f -name "error.log" -exec truncate -s 0 {} \;
+    find /var/log/nginx -type f -name "websocket.log" -exec truncate -s 0 {} \;
+    
+    # Remove old compressed logs (keeping only 7 days worth)
+    find /var/log/nginx -type f -name "*.log.[8-9].gz" -delete
+    find /var/log/nginx -type f -name "*.log.1[0-4].gz" -delete
     echo "Nginx logs cleaned"
 fi
 
